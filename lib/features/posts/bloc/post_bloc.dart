@@ -20,6 +20,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       PostInitialFetchEvent event, Emitter<PostState> emit) async { 
     var client = http.Client();
     List<Post> posts = [];
+    emit(PostFetchingLoadingState());
     try {
       var response = await client.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
       var result = jsonDecode(response.body);
@@ -31,6 +32,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(PostFetchingSuccessfulState(posts: posts));
     }
     catch(e){
+      emit(PostAdditionErrorState());
       logger.e(e);
     }
      finally {
